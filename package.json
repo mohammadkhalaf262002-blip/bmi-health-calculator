@@ -4,16 +4,39 @@
   "description": "Advanced BMI Health Calculator with personalized risk assessment and historical tracking",
   "private": true,
   "dependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "lucide-react": "^0.263.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
     "recharts": "^2.5.0",
-    "lucide-react": "^0.263.1"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "keywords": [
     "bmi",
@@ -30,22 +53,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/bmi-health-calculator"
+    "url": "https://github.com/mohammadkhalaf262002-blip/bmi-health-calculator"
   }
 }
-```
-
-### **File 3: Create `BMICalculator.jsx`**
-
-Create a folder structure: Click "Add file" → "Create new file" → Name it `src/components/BMICalculator.jsx`
-
-Then paste your full calculator code from the artifact.
-
-## **Step 4: Add Topics/Tags**
-
-On your repository page:
-1. Click the ⚙️ icon next to "About"
-2. Add these topics:
-```
-bmi-calculator, health-tech, react, biomedical, data-visualization, 
-healthcare, recharts, tailwind-css, medical-calculator, health-assessment
