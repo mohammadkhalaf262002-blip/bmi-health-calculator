@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, AlertCircle, TrendingUp, Scale, Calendar, Heart, Target, History, Save } from 'lucide-react';
+import { Activity, AlertCircle, TrendingUp, Scale, Heart, Target, History, Save } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 const BMICalculator = () => {
@@ -14,13 +14,199 @@ const BMICalculator = () => {
   const [history, setHistory] = useState([]);
   const [activeTab, setActiveTab] = useState('calculator');
 
+  const styles = {
+    container: {
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #EFF6FF 0%, #E0E7FF 100%)',
+      padding: '24px',
+    },
+    card: {
+      maxWidth: '1200px',
+      margin: '0 auto',
+      backgroundColor: 'white',
+      borderRadius: '16px',
+      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+      padding: '32px',
+      marginBottom: '24px',
+    },
+    header: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+      marginBottom: '24px',
+    },
+    title: {
+      fontSize: '32px',
+      fontWeight: 'bold',
+      color: '#1F2937',
+    },
+    tabContainer: {
+      display: 'flex',
+      gap: '8px',
+      marginBottom: '24px',
+      borderBottom: '2px solid #E5E7EB',
+    },
+    tab: (active) => ({
+      padding: '8px 16px',
+      fontWeight: '600',
+      cursor: 'pointer',
+      color: active ? '#4F46E5' : '#6B7280',
+      borderBottom: active ? '2px solid #4F46E5' : 'none',
+      marginBottom: '-2px',
+      background: 'none',
+      border: 'none',
+      fontSize: '16px',
+    }),
+    inputGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+      gap: '16px',
+      marginBottom: '24px',
+    },
+    label: {
+      display: 'block',
+      fontSize: '14px',
+      fontWeight: '600',
+      color: '#374151',
+      marginBottom: '8px',
+    },
+    input: {
+      width: '100%',
+      padding: '12px',
+      border: '2px solid #D1D5DB',
+      borderRadius: '8px',
+      fontSize: '16px',
+      outline: 'none',
+      boxSizing: 'border-box',
+    },
+    select: {
+      padding: '12px',
+      border: '2px solid #D1D5DB',
+      borderRadius: '8px',
+      fontSize: '16px',
+      outline: 'none',
+      cursor: 'pointer',
+    },
+    flexInput: {
+      display: 'flex',
+      gap: '8px',
+    },
+    bmiCard: {
+      background: 'linear-gradient(135deg, #6366F1 0%, #9333EA 100%)',
+      borderRadius: '12px',
+      padding: '24px',
+      color: 'white',
+      marginBottom: '24px',
+    },
+    bmiDisplay: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '16px',
+    },
+    bmiNumber: {
+      fontSize: '60px',
+      fontWeight: 'bold',
+    },
+    button: {
+      width: '100%',
+      backgroundColor: '#4F46E5',
+      color: 'white',
+      fontWeight: '600',
+      padding: '12px 24px',
+      borderRadius: '8px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '8px',
+      border: 'none',
+      cursor: 'pointer',
+      fontSize: '16px',
+      marginBottom: '24px',
+    },
+    sectionCard: {
+      backgroundColor: '#F9FAFB',
+      borderRadius: '12px',
+      padding: '24px',
+      marginBottom: '24px',
+    },
+    sectionTitle: {
+      fontSize: '18px',
+      fontWeight: '600',
+      color: '#1F2937',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      marginBottom: '16px',
+    },
+    riskItem: {
+      display: 'flex',
+      alignItems: 'flex-start',
+      gap: '8px',
+      marginBottom: '8px',
+    },
+    recommendationGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+      gap: '16px',
+    },
+    recommendationCard: {
+      backgroundColor: 'white',
+      borderRadius: '8px',
+      padding: '16px',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+    },
+    disclaimer: {
+      backgroundColor: '#FEF3C7',
+      border: '1px solid #FCD34D',
+      borderRadius: '8px',
+      padding: '16px',
+      marginTop: '32px',
+    },
+    scale: {
+      position: 'relative',
+      height: '48px',
+      backgroundColor: '#E5E7EB',
+      borderRadius: '24px',
+      overflow: 'hidden',
+      marginBottom: '8px',
+    },
+    scaleInner: {
+      position: 'absolute',
+      inset: 0,
+      display: 'flex',
+    },
+    scaleMarker: (position) => ({
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      width: '4px',
+      backgroundColor: 'black',
+      left: `${position}%`,
+      boxShadow: '0 0 10px rgba(0,0,0,0.5)',
+    }),
+    scaleLabel: (position) => ({
+      position: 'absolute',
+      top: '-32px',
+      left: `${position}%`,
+      transform: 'translateX(-50%)',
+      backgroundColor: 'black',
+      color: 'white',
+      padding: '4px 8px',
+      borderRadius: '4px',
+      fontSize: '12px',
+      fontWeight: 'bold',
+      whiteSpace: 'nowrap',
+    }),
+  };
+
   const bmiCategories = [
-    { name: 'Underweight', range: '< 18.5', color: 'bg-blue-500', min: 0, max: 18.5, risks: ['Malnutrition', 'Weakened immune system', 'Osteoporosis', 'Anemia'] },
-    { name: 'Normal Weight', range: '18.5 - 24.9', color: 'bg-green-500', min: 18.5, max: 24.9, risks: ['Lowest health risk', 'Optimal metabolic function'] },
-    { name: 'Overweight', range: '25 - 29.9', color: 'bg-yellow-500', min: 25, max: 29.9, risks: ['Increased cardiovascular risk', 'Type 2 diabetes risk', 'Hypertension', 'Sleep apnea'] },
-    { name: 'Obese Class I', range: '30 - 34.9', color: 'bg-orange-500', min: 30, max: 34.9, risks: ['High cardiovascular risk', 'Type 2 diabetes', 'Hypertension', 'Joint problems', 'Metabolic syndrome'] },
-    { name: 'Obese Class II', range: '35 - 39.9', color: 'bg-red-500', min: 35, max: 39.9, risks: ['Very high cardiovascular risk', 'Severe metabolic complications', 'Limited mobility', 'Reduced quality of life'] },
-    { name: 'Obese Class III', range: '≥ 40', color: 'bg-red-700', min: 40, max: 100, risks: ['Extremely high health risk', 'Severe chronic conditions', 'Significantly reduced life expectancy'] }
+    { name: 'Underweight', range: '< 18.5', color: '#3B82F6', min: 0, max: 18.5, risks: ['Malnutrition', 'Weakened immune system', 'Osteoporosis', 'Anemia'] },
+    { name: 'Normal Weight', range: '18.5 - 24.9', color: '#22C55E', min: 18.5, max: 24.9, risks: ['Lowest health risk', 'Optimal metabolic function'] },
+    { name: 'Overweight', range: '25 - 29.9', color: '#EAB308', min: 25, max: 29.9, risks: ['Increased cardiovascular risk', 'Type 2 diabetes risk', 'Hypertension', 'Sleep apnea'] },
+    { name: 'Obese Class I', range: '30 - 34.9', color: '#F97316', min: 30, max: 34.9, risks: ['High cardiovascular risk', 'Type 2 diabetes', 'Hypertension', 'Joint problems', 'Metabolic syndrome'] },
+    { name: 'Obese Class II', range: '35 - 39.9', color: '#EF4444', min: 35, max: 39.9, risks: ['Very high cardiovascular risk', 'Severe metabolic complications', 'Limited mobility', 'Reduced quality of life'] },
+    { name: 'Obese Class III', range: '≥ 40', color: '#B91C1C', min: 40, max: 100, risks: ['Extremely high health risk', 'Severe chronic conditions', 'Significantly reduced life expectancy'] }
   ];
 
   useEffect(() => {
@@ -104,7 +290,7 @@ const BMICalculator = () => {
     if (!bmi) return null;
 
     const risks = [];
-    const riskLevel = { level: 'Low', color: 'text-green-600' };
+    const riskLevel = { level: 'Low', color: '#22C55E' };
     const bmiValue = parseFloat(bmi);
 
     if (bmiValue >= 30) {
@@ -113,19 +299,19 @@ const BMICalculator = () => {
       risks.push('Elevated cardiovascular disease risk');
       risks.push('Increased risk of certain cancers');
       riskLevel.level = 'High';
-      riskLevel.color = 'text-red-600';
+      riskLevel.color = '#EF4444';
     } else if (bmiValue >= 25) {
       risks.push('Moderate metabolic risk');
       risks.push('Increased cardiovascular risk');
       risks.push('Monitor for metabolic changes');
       riskLevel.level = 'Moderate';
-      riskLevel.color = 'text-yellow-600';
+      riskLevel.color = '#EAB308';
     } else if (bmiValue < 18.5) {
       risks.push('Risk of nutritional deficiencies');
       risks.push('Weakened immune system');
       risks.push('Reduced bone density risk');
       riskLevel.level = 'Elevated';
-      riskLevel.color = 'text-orange-600';
+      riskLevel.color = '#F97316';
     } else {
       risks.push('Low metabolic disease risk');
       risks.push('Healthy weight range');
@@ -243,310 +429,303 @@ const BMICalculator = () => {
   const recommendations = getPersonalizedRecommendations();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 mb-6">
-          <div className="flex items-center gap-3 mb-6">
-            <Activity className="w-8 h-8 text-indigo-600" />
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Advanced BMI Health Calculator</h1>
-          </div>
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <div style={styles.header}>
+          <Activity size={32} color="#4F46E5" />
+          <h1 style={styles.title}>Advanced BMI Health Calculator</h1>
+        </div>
 
-          <div className="flex gap-2 mb-6 border-b">
-            <button
-              onClick={() => setActiveTab('calculator')}
-              className={`px-4 py-2 font-semibold transition-colors ${
-                activeTab === 'calculator'
-                  ? 'text-indigo-600 border-b-2 border-indigo-600'
-                  : 'text-gray-600 hover:text-indigo-600'
-              }`}
-            >
-              Calculator
-            </button>
-            <button
-              onClick={() => setActiveTab('history')}
-              className={`px-4 py-2 font-semibold transition-colors flex items-center gap-2 ${
-                activeTab === 'history'
-                  ? 'text-indigo-600 border-b-2 border-indigo-600'
-                  : 'text-gray-600 hover:text-indigo-600'
-              }`}
-            >
-              <History className="w-4 h-4" />
+        <div style={styles.tabContainer}>
+          <button style={styles.tab(activeTab === 'calculator')} onClick={() => setActiveTab('calculator')}>
+            Calculator
+          </button>
+          <button style={styles.tab(activeTab === 'history')} onClick={() => setActiveTab('history')}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+              <History size={16} />
               History
-            </button>
-          </div>
+            </div>
+          </button>
+        </div>
 
-          {activeTab === 'calculator' && (
-            <>
-              <div className="grid md:grid-cols-4 gap-4 mb-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Age</label>
+        {activeTab === 'calculator' && (
+          <>
+            <div style={styles.inputGrid}>
+              <div>
+                <label style={styles.label}>Age</label>
+                <input
+                  type="number"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  style={styles.input}
+                  placeholder="Enter age"
+                />
+              </div>
+
+              <div>
+                <label style={styles.label}>Gender</label>
+                <select
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  style={{...styles.input, ...styles.select}}
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={styles.label}>Height</label>
+                <div style={styles.flexInput}>
                   <input
                     type="number"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
-                    placeholder="Enter age"
+                    value={height}
+                    onChange={(e) => setHeight(e.target.value)}
+                    style={{...styles.input, flex: 1}}
+                    placeholder="Height"
                   />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Gender</label>
                   <select
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                    value={heightUnit}
+                    onChange={(e) => setHeightUnit(e.target.value)}
+                    style={styles.select}
                   >
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
+                    <option value="cm">cm</option>
+                    <option value="ft">ft</option>
+                    <option value="in">in</option>
                   </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Height</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="number"
-                      value={height}
-                      onChange={(e) => setHeight(e.target.value)}
-                      className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
-                      placeholder="Height"
-                    />
-                    <select
-                      value={heightUnit}
-                      onChange={(e) => setHeightUnit(e.target.value)}
-                      className="px-3 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
-                    >
-                      <option value="cm">cm</option>
-                      <option value="ft">ft</option>
-                      <option value="in">in</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Weight</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="number"
-                      value={weight}
-                      onChange={(e) => setWeight(e.target.value)}
-                      className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
-                      placeholder="Weight"
-                    />
-                    <select
-                      value={weightUnit}
-                      onChange={(e) => setWeightUnit(e.target.value)}
-                      className="px-3 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
-                    >
-                      <option value="kg">kg</option>
-                      <option value="lbs">lbs</option>
-                    </select>
-                  </div>
                 </div>
               </div>
 
-              {bmi && category && (
-                <div className="space-y-6">
-                  <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <p className="text-sm opacity-90 mb-1">Body Mass Index</p>
-                        <p className="text-5xl font-bold">{bmi}</p>
-                      </div>
-                      <Scale className="w-16 h-16 opacity-80" />
-                    </div>
-                    <div className="pt-4 border-t border-white/20">
-                      <p className="text-lg font-semibold">{category.name}</p>
-                      <p className="text-sm opacity-90">Range: {category.range} kg/m²</p>
-                      {age && (
-                        <p className="text-xs opacity-75 mt-2">
-                          {gender === 'male' ? '👨' : '👩'} {age} years old
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={saveToHistory}
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors"
+              <div>
+                <label style={styles.label}>Weight</label>
+                <div style={styles.flexInput}>
+                  <input
+                    type="number"
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
+                    style={{...styles.input, flex: 1}}
+                    placeholder="Weight"
+                  />
+                  <select
+                    value={weightUnit}
+                    onChange={(e) => setWeightUnit(e.target.value)}
+                    style={styles.select}
                   >
-                    <Save className="w-5 h-5" />
-                    Save to History
-                  </button>
+                    <option value="kg">kg</option>
+                    <option value="lbs">lbs</option>
+                  </select>
+                </div>
+              </div>
+            </div>
 
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5 text-indigo-600" />
-                      BMI Scale Visualization
-                    </h3>
-                    <div className="relative h-12 bg-gray-200 rounded-full overflow-hidden mb-2">
-                      <div className="absolute inset-0 flex">
-                        {bmiCategories.map((cat, idx) => (
-                          <div
-                            key={idx}
-                            className={`${cat.color} flex-1`}
-                            style={{ width: `${100 / bmiCategories.length}%` }}
-                          />
-                        ))}
-                      </div>
-                      <div
-                        className="absolute top-0 bottom-0 w-1 bg-black shadow-lg transition-all duration-300"
-                        style={{ left: `${getBMIPosition()}%` }}
-                      >
-                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white px-2 py-1 rounded text-xs font-bold whitespace-nowrap">
-                          {bmi}
-                        </div>
-                      </div>
+            {bmi && category && (
+              <div>
+                <div style={styles.bmiCard}>
+                  <div style={styles.bmiDisplay}>
+                    <div>
+                      <p style={{fontSize: '14px', opacity: 0.9, marginBottom: '4px'}}>Body Mass Index</p>
+                      <p style={styles.bmiNumber}>{bmi}</p>
                     </div>
-                    <div className="flex justify-between text-xs text-gray-600 mt-1">
-                      <span>15</span>
-                      <span>20</span>
-                      <span>25</span>
-                      <span>30</span>
-                      <span>35</span>
-                      <span>40</span>
+                    <Scale size={64} style={{opacity: 0.8}} />
+                  </div>
+                  <div style={{paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.2)'}}>
+                    <p style={{fontSize: '18px', fontWeight: '600'}}>{category.name}</p>
+                    <p style={{fontSize: '14px', opacity: 0.9}}>Range: {category.range} kg/m²</p>
+                    {age && (
+                      <p style={{fontSize: '12px', opacity: 0.75, marginTop: '8px'}}>
+                        {gender === 'male' ? '👨' : '👩'} {age} years old
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <button style={styles.button} onClick={saveToHistory}>
+                  <Save size={20} />
+                  Save to History
+                </button>
+
+                <div style={{marginBottom: '24px'}}>
+                  <h3 style={styles.sectionTitle}>
+                    <TrendingUp size={20} color="#4F46E5" />
+                    BMI Scale Visualization
+                  </h3>
+                  <div style={styles.scale}>
+                    <div style={styles.scaleInner}>
+                      {bmiCategories.map((cat, idx) => (
+                        <div
+                          key={idx}
+                          style={{
+                            backgroundColor: cat.color,
+                            flex: 1,
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <div style={styles.scaleMarker(getBMIPosition())}>
+                      <div style={styles.scaleLabel(getBMIPosition())}>{bmi}</div>
                     </div>
                   </div>
+                  <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#6B7280'}}>
+                    <span>15</span>
+                    <span>20</span>
+                    <span>25</span>
+                    <span>30</span>
+                    <span>35</span>
+                    <span>40</span>
+                  </div>
+                </div>
 
-                  {metabolicRisk && (
-                    <div className="bg-gray-50 rounded-xl p-6">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                        <Heart className="w-5 h-5 text-indigo-600" />
-                        Metabolic Risk Assessment
-                      </h3>
-                      <div className="mb-4">
-                        <span className="text-sm text-gray-600">Overall Risk Level: </span>
-                        <span className={`text-lg font-bold ${metabolicRisk.color}`}>
-                          {metabolicRisk.level}
-                        </span>
-                      </div>
-                      <div className="space-y-2">
-                        {metabolicRisk.risks.map((risk, idx) => (
-                          <div key={idx} className="flex items-start gap-2">
-                            <div className={`w-2 h-2 rounded-full mt-2 ${
-                              metabolicRisk.level === 'High' ? 'bg-red-600' :
-                              metabolicRisk.level === 'Elevated' ? 'bg-orange-600' :
-                              metabolicRisk.level === 'Moderate' ? 'bg-yellow-600' :
-                              'bg-green-600'
-                            }`} />
-                            <p className="text-gray-700">{risk}</p>
-                          </div>
-                        ))}
-                      </div>
+                {metabolicRisk && (
+                  <div style={styles.sectionCard}>
+                    <h3 style={styles.sectionTitle}>
+                      <Heart size={20} color="#4F46E5" />
+                      Metabolic Risk Assessment
+                    </h3>
+                    <div style={{marginBottom: '16px'}}>
+                      <span style={{fontSize: '14px', color: '#6B7280'}}>Overall Risk Level: </span>
+                      <span style={{fontSize: '18px', fontWeight: 'bold', color: metabolicRisk.color}}>
+                        {metabolicRisk.level}
+                      </span>
                     </div>
-                  )}
+                    <div>
+                      {metabolicRisk.risks.map((risk, idx) => (
+                        <div key={idx} style={styles.riskItem}>
+                          <div style={{
+                            width: '8px',
+                            height: '8px',
+                            borderRadius: '50%',
+                            backgroundColor: metabolicRisk.color,
+                            marginTop: '6px',
+                          }} />
+                          <p style={{color: '#374151', margin: 0}}>{risk}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-                  {recommendations.length > 0 && (
-                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                        <Target className="w-5 h-5 text-green-600" />
-                        Personalized Health Recommendations
-                      </h3>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        {recommendations.map((rec, idx) => (
-                          <div key={idx} className="bg-white rounded-lg p-4 shadow-sm">
-                            <div className="flex items-start gap-3">
-                              <span className="text-2xl">{rec.icon}</span>
-                              <div>
-                                <h4 className="font-semibold text-gray-800 mb-1">{rec.title}</h4>
-                                <p className="text-sm text-gray-600">{rec.description}</p>
-                              </div>
+                {recommendations.length > 0 && (
+                  <div style={{...styles.sectionCard, background: 'linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%)'}}>
+                    <h3 style={styles.sectionTitle}>
+                      <Target size={20} color="#22C55E" />
+                      Personalized Health Recommendations
+                    </h3>
+                    <div style={styles.recommendationGrid}>
+                      {recommendations.map((rec, idx) => (
+                        <div key={idx} style={styles.recommendationCard}>
+                          <div style={{display: 'flex', alignItems: 'flex-start', gap: '12px'}}>
+                            <span style={{fontSize: '32px'}}>{rec.icon}</span>
+                            <div>
+                              <h4 style={{fontWeight: '600', color: '#1F2937', marginBottom: '4px', marginTop: 0}}>{rec.title}</h4>
+                              <p style={{fontSize: '14px', color: '#6B7280', margin: 0}}>{rec.description}</p>
                             </div>
                           </div>
-                        ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div style={styles.sectionCard}>
+                  <h3 style={styles.sectionTitle}>
+                    <AlertCircle size={20} color="#4F46E5" />
+                    Health Risk Factors
+                  </h3>
+                  <div>
+                    {category.risks.map((risk, idx) => (
+                      <div key={idx} style={styles.riskItem}>
+                        <div style={{
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '50%',
+                          backgroundColor: category.color,
+                          marginTop: '6px',
+                        }} />
+                        <p style={{color: '#374151', margin: 0}}>{risk}</p>
                       </div>
-                    </div>
-                  )}
-
-                  <div className="bg-gray-50 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                      <AlertCircle className="w-5 h-5 text-indigo-600" />
-                      Health Risk Factors
-                    </h3>
-                    <div className="space-y-2">
-                      {category.risks.map((risk, idx) => (
-                        <div key={idx} className="flex items-start gap-2">
-                          <div className={`w-2 h-2 rounded-full ${category.color} mt-2`} />
-                          <p className="text-gray-700">{risk}</p>
-                        </div>
-                      ))}
-                    </div>
+                    ))}
                   </div>
                 </div>
-              )}
-            </>
-          )}
+              </div>
+            )}
+          </>
+        )}
 
-          {activeTab === 'history' && (
-            <div className="space-y-6">
-              {history.length === 0 ? (
-                <div className="text-center py-12">
-                  <History className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">No history data yet. Save your measurements to track progress!</p>
+        {activeTab === 'history' && (
+          <div>
+            {history.length === 0 ? (
+              <div style={{textAlign: 'center', padding: '48px 0'}}>
+                <History size={64} color="#D1D5DB" style={{margin: '0 auto 16px'}} />
+                <p style={{color: '#6B7280'}}>No history data yet. Save your measurements to track progress!</p>
+              </div>
+            ) : (
+              <>
+                <div style={styles.sectionCard}>
+                  <h3 style={{...styles.sectionTitle, marginBottom: '16px'}}>BMI Trend Over Time</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={history.map((h, i) => ({ ...h, index: i + 1, date: formatDate(h.date) }))}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" />
+                      <YAxis domain={[15, 40]} />
+                      <Tooltip />
+                      <Legend />
+                      <ReferenceLine y={18.5} stroke="#3B82F6" strokeDasharray="3 3" label="Underweight" />
+                      <ReferenceLine y={25} stroke="#22C55E" strokeDasharray="3 3" label="Normal" />
+                      <ReferenceLine y={30} stroke="#F97316" strokeDasharray="3 3" label="Obese" />
+                      <Line type="monotone" dataKey="bmi" stroke="#6366F1" strokeWidth={3} name="BMI" />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
-              ) : (
-                <>
-                  <div className="bg-gray-50 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">BMI Trend Over Time</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={history.map((h, i) => ({ ...h, index: i + 1, date: formatDate(h.date) }))}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
-                        <YAxis domain={[15, 40]} />
-                        <Tooltip />
-                        <Legend />
-                        <ReferenceLine y={18.5} stroke="#3b82f6" strokeDasharray="3 3" label="Underweight" />
-                        <ReferenceLine y={25} stroke="#22c55e" strokeDasharray="3 3" label="Normal" />
-                        <ReferenceLine y={30} stroke="#f59e0b" strokeDasharray="3 3" label="Obese" />
-                        <Line type="monotone" dataKey="bmi" stroke="#6366f1" strokeWidth={3} name="BMI" />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
 
-                  <div className="bg-gray-50 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">History Log</h3>
-                    <div className="space-y-3">
-                      {[...history].reverse().map((entry, idx) => (
-                        <div key={idx} className="bg-white rounded-lg p-4 flex justify-between items-center">
-                          <div>
-                            <p className="font-semibold text-gray-800">
-                              {new Date(entry.date).toLocaleDateString('en-US', { 
-                                year: 'numeric', 
-                                month: 'long', 
-                                day: 'numeric' 
-                              })}
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              BMI: {entry.bmi} • Weight: {entry.weight} kg
-                            </p>
-                          </div>
-                          <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            entry.category === 'Normal Weight' ? 'bg-green-100 text-green-700' :
-                            entry.category === 'Underweight' ? 'bg-blue-100 text-blue-700' :
-                            entry.category === 'Overweight' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-red-100 text-red-700'
-                          }`}>
-                            {entry.category}
-                          </span>
+                <div style={styles.sectionCard}>
+                  <h3 style={{...styles.sectionTitle, marginBottom: '16px'}}>History Log</h3>
+                  <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                    {[...history].reverse().map((entry, idx) => (
+                      <div key={idx} style={{...styles.recommendationCard, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <div>
+                          <p style={{fontWeight: '600', color: '#1F2937', margin: '0 0 4px 0'}}>
+                            {new Date(entry.date).toLocaleDateString('en-US', { 
+                              year: 'numeric', 
+                              month: 'long', 
+                              day: 'numeric' 
+                            })}
+                          </p>
+                          <p style={{fontSize: '14px', color: '#6B7280', margin: 0}}>
+                            BMI: {entry.bmi} • Weight: {entry.weight} kg
+                          </p>
                         </div>
-                      ))}
-                    </div>
+                        <span style={{
+                          padding: '4px 12px',
+                          borderRadius: '16px',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          backgroundColor: entry.category === 'Normal Weight' ? '#D1FAE5' :
+                            entry.category === 'Underweight' ? '#DBEAFE' :
+                            entry.category === 'Overweight' ? '#FEF3C7' : '#FEE2E2',
+                          color: entry.category === 'Normal Weight' ? '#065F46' :
+                            entry.category === 'Underweight' ? '#1E40AF' :
+                            entry.category === 'Overweight' ? '#92400E' : '#991B1B',
+                        }}>
+                          {entry.category}
+                        </span>
+                      </div>
+                    ))}
                   </div>
-                </>
-              )}
-            </div>
-          )}
-
-          <div className="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-            <p className="text-sm text-amber-800">
-              <strong>Medical Disclaimer:</strong> This calculator is for educational purposes only and should not replace professional medical advice. BMI does not account for muscle mass, bone density, body composition, or overall health. Always consult healthcare professionals for comprehensive health assessments.
-            </p>
+                </div>
+              </>
+            )}
           </div>
-        </div>
+        )}
 
-        <div className="text-center text-sm text-gray-600">
-          <p>Built with React & Recharts • Data persists across sessions • WHO BMI Classification</p>
+        <div style={styles.disclaimer}>
+          <p style={{fontSize: '14px', color: '#92400E', margin: 0}}>
+            <strong>Medical Disclaimer:</strong> This calculator is for educational purposes only and should not replace professional medical advice. BMI does not account for muscle mass, bone density, body composition, or overall health. Always consult healthcare professionals for comprehensive health assessments.
+          </p>
         </div>
+      </div>
+
+      <div style={{textAlign: 'center', fontSize: '14px', color: '#6B7280'}}>
+        <p>Built with React & Recharts • Data persists across sessions • WHO BMI Classification</p>
       </div>
     </div>
   );
