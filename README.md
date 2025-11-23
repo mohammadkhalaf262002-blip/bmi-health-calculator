@@ -154,9 +154,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👤 Author
 
 **Mohammad Khalaf**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-- Portfolio: [yourwebsite.com](https://yourwebsite.com)
+- GitHub: [@mohammadkhalaf262002)
+- LinkedIn: [https://www.linkedin.com/in/mohammad-khalaf-b80273261/?locale=en_US)
+- Portfolio:
 
 ## 🙏 Acknowledgments
 
